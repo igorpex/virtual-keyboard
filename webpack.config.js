@@ -58,7 +58,13 @@ module.exports = ({ development }) => ({
         noErrorOnMissing: true,
       }],
     }),
-    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+      cleanOnceBeforeBuildPatterns: [
+        '**/*',
+        '!.git',
+      ],
+    }),
   ],
   resolve: {
     extensions: ['.ts', '.js'],
