@@ -1,7 +1,9 @@
 import './styles.css';
 import { keys, keysFuncStatus, keysWidth } from './js/keys';
-import { enDefault, enCaps, enShifted } from './js/en';
-import { ruDefault, ruCaps, ruShifted } from './js/ru';
+// import { enDefault, enCaps, enShifted } from './js/en';
+import { enDefault } from './js/en';
+// import { ruDefault, ruCaps, ruShifted } from './js/ru';
+import { ruDefault } from './js/ru';
 
 const keysPressed = new Set();
 
@@ -17,16 +19,16 @@ if (!lang) {
   localStorage.setItem('lang', lang);
 }
 let langDefault;
-let langShifted;
-let langCaps;
+// let langShifted;
+// let langCaps;
 if (lang === 'en') {
   langDefault = enDefault;
-  langShifted = enShifted;
-  langCaps = enCaps;
+  // langShifted = enShifted;
+  // langCaps = enCaps;
 } else {
   langDefault = ruDefault;
-  langShifted = ruShifted;
-  langCaps = ruCaps;
+  // langShifted = ruShifted;
+  // langCaps = ruCaps;
 }
 
 function drawKeyboard() {
@@ -59,8 +61,6 @@ function drawKeyboard() {
 
       // Check if key is pressed
       if (keysPressed.has(keyCode)) key.classList.add('active');
-      // console.log("Pressed keys:", keysPressed);
-      // console.log("KeyCode:", keyCode);
 
       if (funcStatus) key.classList.add('function-key');
       key.classList.add(keyWidth);
@@ -107,8 +107,6 @@ function init() {
 // Document.createDocumentFragment()
 
 function processClick(event) {
-  // console.log("event.target.dataset.keycode", event.target.dataset.keycode);
-  // console.log("Кликнул");
   const inputArea = document.querySelector('.input-area');
   inputArea.focus();
   const eventKeyDown = new KeyboardEvent('keydown', {
@@ -142,17 +140,10 @@ function reDraw() {
   newKeyboard.addEventListener('click', processClick);
   keyboard.replaceWith(newKeyboard);
   // document.body.append(comment);
-  console.log('REDRAW done');
 }
 
 function keyDown(event) {
   const keyCode = event.code;
-
-  // if (langShifted[keyCode]) {
-  //     event.key = "E"
-  // }
-
-  console.log(event);
 
   if (!event.repeat) {
     keysPressed.add(keyCode);
@@ -189,7 +180,6 @@ function keyDown(event) {
 function keyUp(event) {
   const key = event.code;
   keysPressed.delete(key);
-  // console.log(event);
   reDraw();
 }
 
