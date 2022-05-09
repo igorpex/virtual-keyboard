@@ -1,0 +1,54 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.keyboard__row {
+  display: flex;
+  flex-direction: row;
+  width: 700px;
+  justify-content: space-between;
+}
+
+.keyboard__key {
+  border: solid;
+  color: black;
+  height: 40px;
+  text-align: center;
+  margin: 3px;
+  transition: 300ms;
+}
+
+.keyboard__key.active {
+  background-color: blue;
+  border-radius: 20px;
+}
+
+.keyboard__key:hover {
+  transition: 300ms;
+  background-color: lightgreen;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.function-key {
+  background-color: gray;
+}
+
+.short {
+  width: 40px;
+}
+
+.long {
+  width: 50px;
+}
+
+.very-long {
+  width: 100px;
+}
+
+.space-long {
+  width: 250px;
+}
+
