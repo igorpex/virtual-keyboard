@@ -18,13 +18,13 @@ body {
   height: 40px;
   text-align: center;
   margin: 3px;
-  transition: 500ms;
+  transition: 0.5s;
 }
 
 .keyboard__key:hover {
-  transition: 500ms;
+  transition: 0.5s;
   background-color: lightgreen;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   cursor: pointer;
 }
 
@@ -32,6 +32,7 @@ body {
   height: 40px;
   background-color: lightblue;
   border-radius: 20px;
+  transition: 0.5s;
 }
 
 .function-key {

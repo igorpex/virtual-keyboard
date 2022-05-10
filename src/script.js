@@ -8,6 +8,7 @@ const keysPressed = new Set();
 // setup variables
 let isShifted = false;
 let capsIsOn = false;
+let mouseDown = null;
 
 let lang = localStorage.getItem('lang');
 if (!lang) {
@@ -145,7 +146,7 @@ function init() {
 
 // Document.createDocumentFragment()
 
-function processClick(event) {
+function processMouseDown(event) {
   if (!event.target.dataset.keycode) return;
   const inputArea = document.querySelector('.input-area');
   inputArea.focus();
@@ -154,32 +155,38 @@ function processClick(event) {
     cancelable: true,
     code: event.target.dataset.keycode,
     key: langDefault[event.target.dataset.keycode],
-    // target: inputArea,
-    // sourceCapabilities: InputDeviceCapabilities,
     view: window,
   });
-  // document.dispatchEvent(eventKeyDown);
+  mouseDown = event.target.dataset.keycode;
   inputArea.dispatchEvent(eventKeyDown);
+}
 
-  const eventKeyUp = new KeyboardEvent('keyup', {
-    bubbles: true,
-    cancelable: true,
-    code: event.target.dataset.keycode,
-    key: langDefault[event.target.dataset.keycode],
-    // target: inputArea,
-    // sourceCapabilities: InputDeviceCapabilities,
-    view: window,
-  });
-  // document.dispatchEvent(eventKeyUp);
-  inputArea.dispatchEvent(eventKeyUp);
+function processMouseUp() {
+  if (mouseDown) {
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
+    const eventKeyUp = new KeyboardEvent('keyup', {
+      bubbles: true,
+      cancelable: true,
+      code: mouseDown,
+      key: langDefault[mouseDown],
+      // target: inputArea,
+      // sourceCapabilities: InputDeviceCapabilities,
+      view: window,
+    });
+    // document.dispatchEvent(eventKeyUp);
+    inputArea.dispatchEvent(eventKeyUp);
+    mouseDown = null;
+  }
 }
 
 function reDraw() {
   const keyboard = document.querySelector('.keyboard');
   const newKeyboard = drawKeyboard();
-  newKeyboard.addEventListener('click', processClick);
+  // newKeyboard.addEventListener('click', processClick);
+  newKeyboard.addEventListener('mousedown', processMouseDown);
+  document.addEventListener('mouseup', processMouseUp);
   keyboard.replaceWith(newKeyboard);
-  // document.body.append(comment);
 }
 
 function analyseKeys() {
@@ -329,6 +336,6 @@ window.addEventListener('DOMContentLoaded', init());
 
 window.addEventListener('keydown', keyDown);
 window.addEventListener('keyup', keyUp);
-// document.querySelector('.keyboard').addEventListener("click", processClick);
 
-document.querySelector('.keyboard').addEventListener('click', processClick);
+document.querySelector('.keyboard').addEventListener('mousedown', processMouseDown);
+document.addEventListener('mouseup', processMouseUp);
