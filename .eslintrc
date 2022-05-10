@@ -19,7 +19,7 @@
     "max-len": [
       "warn",
       {
-        "code": 160
+        "code": 300
       }
     ],
     "indent": [

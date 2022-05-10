@@ -243,7 +243,7 @@ function keyDown(event) {
     inputArea.value = `${inputArea.value.substring(0, start - 1)}${inputArea.value.substring(end)}`;
     inputArea.selectionStart = start - 1;
     inputArea.selectionEnd = start - 1;
-  } else if (keyCode === 'Caps' || keyCode === 'AltLeft' || keyCode === 'AltRight' || keyCode === 'ShiftLeft' || keyCode === 'ShiftRight' || keyCode === 'OS') {
+  } else if (keyCode === 'CapsLock' || keyCode === 'AltLeft' || keyCode === 'AltRight' || keyCode === 'ShiftLeft' || keyCode === 'ShiftRight' || keyCode === 'OS' || keyCode === 'ControlLeft' || keyCode === 'ControlRight') {
     event.preventDefault();
     const inputArea = document.querySelector('.input-area');
     inputArea.focus();
