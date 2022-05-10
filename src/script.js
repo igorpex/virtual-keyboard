@@ -1,17 +1,13 @@
 import './styles.css';
 import { keys, keysFuncStatus, keysWidth } from './js/keys';
-// import { enDefault, enCaps, enShifted } from './js/en';
-import { enDefault } from './js/en';
-// import { ruDefault, ruCaps, ruShifted } from './js/ru';
-import { ruDefault } from './js/ru';
+import { enDefault, enCaps, enShifted } from './js/en';
+import { ruDefault, ruCaps, ruShifted } from './js/ru';
 
 const keysPressed = new Set();
 
-// function drawTextArea() {
-
-// }
-
-// createElements
+// setup variables
+let isShifted = false;
+let capsIsOn = false;
 
 let lang = localStorage.getItem('lang');
 if (!lang) {
@@ -19,16 +15,55 @@ if (!lang) {
   localStorage.setItem('lang', lang);
 }
 let langDefault;
-// let langShifted;
-// let langCaps;
-if (lang === 'en') {
-  langDefault = enDefault;
-  // langShifted = enShifted;
-  // langCaps = enCaps;
-} else {
-  langDefault = ruDefault;
-  // langShifted = ruShifted;
-  // langCaps = ruCaps;
+let langShifted;
+let langCaps;
+
+function setLanguage() {
+  if (lang === 'en') {
+    langDefault = enDefault;
+    langShifted = enShifted;
+    langCaps = enCaps;
+  } else {
+    langDefault = ruDefault;
+    langShifted = ruShifted;
+    langCaps = ruCaps;
+  }
+}
+
+setLanguage();
+
+function changeLanguage() {
+  if (lang === 'en') {
+    lang = 'ru';
+  } else {
+    lang = 'en';
+  }
+  localStorage.setItem('lang', lang);
+  setLanguage();
+}
+
+// get key text by keycode
+function getKeyText(keyCode) {
+  let keyText;
+  const funcStatus = keysFuncStatus[keyCode];
+  // for functional keys
+  if (funcStatus) {
+    keyText = langDefault[keyCode];
+    // for keys which can change when shift is pressed
+  } else if (langShifted[keyCode]) {
+    // if shift is pressed
+    if (isShifted) {
+      keyText = langShifted[keyCode];
+    } else {
+      keyText = langDefault[keyCode];
+    }
+    // for normal text
+  } else if ((capsIsOn && !isShifted) || (!capsIsOn && isShifted)) {
+    keyText = langCaps[keyCode];
+  } else {
+    keyText = langDefault[keyCode];
+  }
+  return keyText;
 }
 
 function drawKeyboard() {
@@ -37,7 +72,7 @@ function drawKeyboard() {
   let count = 0;
   const keyboard = document.createElement('div');
   keyboard.classList.add('keyboard');
-
+  // const lang = localStorage.getItem('lang');
   // for each row of keyboard
   keyboardLayout.forEach((rowLength) => {
     const keyboardRow = document.createElement('div');
@@ -46,11 +81,10 @@ function drawKeyboard() {
     for (let i = count; i < count + rowLength; i++) {
       // Get code
       const keyCode = keys[i];
-
-      const keyText = langDefault[keyCode];
-
+      // Get text
       const funcStatus = keysFuncStatus[keyCode];
       const keyWidth = keysWidth[keyCode];
+      const keyText = getKeyText(keyCode);
 
       const key = document.createElement('div');
 
@@ -112,6 +146,7 @@ function init() {
 // Document.createDocumentFragment()
 
 function processClick(event) {
+  if (!event.target.dataset.keycode) return;
   const inputArea = document.querySelector('.input-area');
   inputArea.focus();
   const eventKeyDown = new KeyboardEvent('keydown', {
@@ -147,11 +182,24 @@ function reDraw() {
   // document.body.append(comment);
 }
 
+function analyseKeys() {
+  if ((keysPressed.has('ShiftLeft') || keysPressed.has('ShiftRight')) && (keysPressed.has('ControlLeft') || keysPressed.has('ControlRight'))) {
+    changeLanguage();
+  }
+  if ((keysPressed.has('ShiftLeft') || keysPressed.has('ShiftRight'))) {
+    isShifted = true;
+  } else isShifted = false;
+  if (keysPressed.has('CapsLock')) {
+    capsIsOn = !capsIsOn;
+  }
+}
+
 function keyDown(event) {
   const keyCode = event.code;
 
   if (!event.repeat) {
     keysPressed.add(keyCode);
+    analyseKeys();
     reDraw();
   }
 
@@ -163,28 +211,61 @@ function keyDown(event) {
     const end = inputArea.selectionEnd;
     // set textarea value to: text before caret + tab + text after caret
     inputArea.value = `${inputArea.value.substring(0, start)}\t${inputArea.value.substring(end)}`;
-
     // put caret at right position again
     inputArea.selectionStart = start + 1;
     inputArea.selectionEnd = start + 1;
-  }
-
-  if (keyCode === 'AltLeft' || keyCode === 'AltRight') {
+  } else if (keyCode === 'Enter') {
     event.preventDefault();
     const inputArea = document.querySelector('.input-area');
     inputArea.focus();
-  }
-
-  if (keyCode === 'OS') {
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    // set textarea value to: text before caret + New Line + text after caret
+    inputArea.value = `${inputArea.value.substring(0, start)}\n${inputArea.value.substring(end)}`;
+    // put caret at right position again
+    inputArea.selectionStart = start + 1;
+    inputArea.selectionEnd = start + 1;
+  } else if (keyCode === 'Delete') {
     event.preventDefault();
     const inputArea = document.querySelector('.input-area');
     inputArea.focus();
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    inputArea.value = `${inputArea.value.substring(0, start)}${inputArea.value.substring(end + 1)}`;
+    inputArea.selectionStart = start;
+    inputArea.selectionEnd = start;
+  } else if (keyCode === 'Backspace') {
+    event.preventDefault();
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    inputArea.value = `${inputArea.value.substring(0, start - 1)}${inputArea.value.substring(end)}`;
+    inputArea.selectionStart = start - 1;
+    inputArea.selectionEnd = start - 1;
+  } else if (keyCode === 'Caps' || keyCode === 'AltLeft' || keyCode === 'AltRight' || keyCode === 'ShiftLeft' || keyCode === 'ShiftRight' || keyCode === 'OS') {
+    event.preventDefault();
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
+  } else {
+    event.preventDefault();
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
+    const keyText = getKeyText(keyCode);
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    // set textarea value to: text before caret + Text + text after caret
+    inputArea.value = `${inputArea.value.substring(0, start)}${keyText}${inputArea.value.substring(end)}`;
+    // put caret at right position again
+    inputArea.selectionStart = start + 1;
+    inputArea.selectionEnd = start + 1;
   }
 }
 
 function keyUp(event) {
   const key = event.code;
   keysPressed.delete(key);
+  analyseKeys();
   reDraw();
 }
 

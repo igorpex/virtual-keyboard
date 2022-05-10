@@ -92,6 +92,7 @@ const enCaps = {
   KeyB: 'B',
   KeyN: 'N',
   KeyM: 'M',
+  Space: ' ',
 };
 
 const enShifted = {

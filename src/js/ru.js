@@ -99,6 +99,7 @@ const ruCaps = {
   KeyM: 'Ь',
   Comma: 'Б',
   Period: 'Ю',
+  Space: ' ',
 };
 
 const ruShifted = {

@@ -9,6 +9,7 @@ body {
   flex-direction: row;
   width: 700px;
   justify-content: space-between;
+  align-items: center;
 }
 
 .keyboard__key {
@@ -17,19 +18,20 @@ body {
   height: 40px;
   text-align: center;
   margin: 3px;
-  transition: 300ms;
-}
-
-.keyboard__key.active {
-  background-color: blue;
-  border-radius: 20px;
+  transition: 500ms;
 }
 
 .keyboard__key:hover {
-  transition: 300ms;
+  transition: 500ms;
   background-color: lightgreen;
   border-radius: 20px;
   cursor: pointer;
+}
+
+.keyboard__key.active {
+  height: 40px;
+  background-color: lightblue;
+  border-radius: 20px;
 }
 
 .function-key {
