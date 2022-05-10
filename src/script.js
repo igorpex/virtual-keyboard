@@ -74,6 +74,11 @@ function drawKeyboard() {
 }
 
 function init() {
+  const fav = document.createElement('link');
+  fav.rel = 'icon';
+  document.getElementsByTagName('head')[0].append(fav);
+  fav.href = './favicon.ico';
+
   const container = document.createElement('div');
   container.classList.add('container');
   // heading
