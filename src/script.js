@@ -247,11 +247,67 @@ function keyDown(event) {
     event.preventDefault();
     const inputArea = document.querySelector('.input-area');
     inputArea.focus();
-  } else {
+  } else if (keyCode === 'ArrowLeft') {
     event.preventDefault();
     const inputArea = document.querySelector('.input-area');
     inputArea.focus();
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    if (isShifted) {
+      inputArea.selectionStart = start - 1;
+      inputArea.selectionEnd = end;
+    } else {
+      inputArea.selectionStart = start - 1;
+      inputArea.selectionEnd = start - 1;
+    }
+  } else if (keyCode === 'ArrowRight') {
+    event.preventDefault();
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
+    const start = inputArea.selectionStart;
+    const end = inputArea.selectionEnd;
+    if (isShifted) {
+      inputArea.selectionStart = start;
+      inputArea.selectionEnd = end + 1;
+    } else {
+      inputArea.selectionStart = end + 1;
+      inputArea.selectionEnd = end + 1;
+    }
+  } else if (keyCode === 'ArrowUp') {
+    if (!event.isTrusted) {
+      event.preventDefault();
+      const inputArea = document.querySelector('.input-area');
+      inputArea.focus();
+      const end = inputArea.selectionEnd;
+      if (isShifted) {
+        inputArea.selectionStart = 0;
+        inputArea.selectionEnd = end;
+      } else {
+        inputArea.selectionStart = 0;
+        inputArea.selectionEnd = 0;
+      }
+    }
+  } else if (keyCode === 'ArrowDown') {
+    if (!event.isTrusted) {
+      event.preventDefault();
+      const inputArea = document.querySelector('.input-area');
+      inputArea.focus();
+      const start = inputArea.selectionStart;
+      const len = inputArea.value.length;
+      if (isShifted) {
+        inputArea.selectionStart = start;
+        inputArea.selectionEnd = len;
+      } else {
+        inputArea.selectionStart = len;
+        inputArea.selectionEnd = len;
+      }
+    }
+  } else {
     const keyText = getKeyText(keyCode);
+    if (!keyText) return;
+    event.preventDefault();
+    const inputArea = document.querySelector('.input-area');
+    inputArea.focus();
     const start = inputArea.selectionStart;
     const end = inputArea.selectionEnd;
     // set textarea value to: text before caret + Text + text after caret
