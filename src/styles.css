@@ -33,6 +33,18 @@ body {
   background-color: lightblue;
   border-radius: 20px;
   transition: 0.5s;
+  animation-name: active;
+  animation-duration: 0.3s;
+}
+
+@keyframes active {
+  from {
+    border-radius: 0px;
+  }
+
+  to {
+    border-radius: 20px;
+  }
 }
 
 .function-key {
